@@ -17,4 +17,10 @@ Core Principles of OOPs:
 - Modularity
 - Mantainance
 
-## Starting with JAVA.
+## Starting with JAVA
+- Write Once Run Anywhere
+- Platform independant
+- Object Oriented 
+- Simple & Familier (*I don't know WHY??*)
+- *System.out.println("Hello World");*
+- 
