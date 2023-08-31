@@ -56,7 +56,7 @@ Core Principles of OOPs:
 - float (32 bits)
 - double (64 bits)
 
-
+- There is no ``sizeof()``
 
 
 
