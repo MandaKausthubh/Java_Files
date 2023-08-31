@@ -42,4 +42,6 @@ Core Principles of OOPs:
 - Multi - Threading
 - Async Programming 
 - Java Applets were the first web dev thing??
-- 
+- Distributed Computing
+
+### Versions of Java
