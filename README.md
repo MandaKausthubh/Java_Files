@@ -44,4 +44,22 @@ Core Principles of OOPs:
 - Java Applets were the first web dev thing??
 - Distributed Computing
 
-### Versions of Java
+## Types in Java
+
+### Primitive Types:
+- Boolean
+- char (16 bits)
+- byte (8 bits)
+- short (16 bits)
+- int (32 bits)
+- long (64 bits)
+- float (32 bits)
+- double (64 bits)
+
+
+
+
+
+
+
+
