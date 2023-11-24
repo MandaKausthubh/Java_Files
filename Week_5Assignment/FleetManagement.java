@@ -11,7 +11,7 @@ class Vehicle {
     private double VehiclePrice;
 
     // Constructors:
-    public Vehicle(int ID, String Brand, double Price) {
+    public Vehicle(int ID, String Brand, double Price, double Rental) {
         VehicleBrand = Brand;
         VehicleID = ID;
         VehiclePrice = Price;
@@ -30,7 +30,7 @@ class Car extends Vehicle {
 
     // Constructor:
     public Car(int ID, String Brand, double Price, String Type, String Fuel, String Transmission) {
-        super(ID, Brand, Price);
+        super(ID, Brand, Price, double Rental);
         CarType = Type;
         CarFuel = Fuel;
         CarTransmission = Transmission;
@@ -42,8 +42,8 @@ class Truck extends Vehicle{
     private double TruckCargoCapacity, TruckBedLength, TruckFuelEfficiency;
     
     // Constructor:
-    public Truck(int ID, String Brand, double Price, int NumberOfAxels,  double CargoCapacity, double BedLength, double FuelEfficiency) {
-        super(ID, Brand, Price);
+    public Truck(int ID, String Brand, double Price, double Rental, int NumberOfAxels,  double CargoCapacity, double BedLength, double FuelEfficiency) {
+        super(ID, Brand, Price, Rental);
         TruckBedLength = BedLength;
         TruckCargoCapacity = CargoCapacity;
         TruckFuelEfficiency = FuelEfficiency;
@@ -58,8 +58,8 @@ class Bicycle extends Vehicle {
     private int BicycleNumberOfGears;
 
     //Constructors:
-    public Bicycle(int ID, String Brand, double Price, String Type, String Frame, int NumberOfGears) {
-        super(ID, Brand, Price);
+    public Bicycle(int ID, String Brand, double Price, double Rental, String Type, String Frame, int NumberOfGears) {
+        super(ID, Brand, Price, Rental);
         BicycleFrame = Frame;
         BicycleNumberOfGears = NumberOfGears;
         BicycleType = Type;
@@ -70,8 +70,8 @@ class Drone extends Vehicle {
     private double DroneMaxAltitude, DroneFlyingTime, DroneCameraRsolution;
     
     //Constructor: 
-    public Drone(int ID, String Brand, double Price, double MaxAltitude, double FlyingTime, int CameraResolution) {
-        super(ID, Brand, Price);
+    public Drone(int ID, String Brand, double Price, double Rental, double MaxAltitude, double FlyingTime, int CameraResolution) {
+        super(ID, Brand, Price, Rental);
         DroneMaxAltitude = MaxAltitude;
         DroneFlyingTime = FlyingTime;
         DroneCameraRsolution = CameraResolution;
@@ -104,6 +104,13 @@ class DealerShipCustomer {
         Rent NewRent = new Rent(VID, Brand, P, D);
         VehiclesBorrowedByCustomer.add(NewRent);
     }
+    public String DisplayHistory() {
+        String ans = "Customer " + CustomerID + " Rental Hitory:\n";
+        for(Rent x: VehiclesBorrowedByCustomer) {
+            ans += x.DisplayRent();
+        }
+        return ans;
+    }
 }
 
 
@@ -118,16 +125,17 @@ class VehicleSystem {
 
     public VehicleSystem () {CurrentCustomerID = 1; NetValue = 0;}
     
-    public void AddVehicle(String Code, int ID, String Brand, double Price, String[] OtherParameters) {
+    public String AddVehicle(String Code, int ID, String Brand, double Price, double Rental, String[] OtherParameters) {
         Vehicle NewVehicle;
-        
         if(Code == "c") {
-            NewVehicle = new Car(ID, Brand, Price, OtherParameters[0], OtherParameters[1], OtherParameters[2]);
+            NewVehicle = new Car(ID, Brand, Price, Rental, OtherParameters[0], OtherParameters[1], OtherParameters[2]);
             MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);
             NetValue += NewVehicle.GetVehiclePrice() ;
+            return "Car - ID:" + ID + "Brand: " + Brand + ", Price: " + Price + ", Rental Cost: " + 
+                Rental + "/day, Type: " + OtherParameters[0] + ", Fuel: " + OtherParameters[1] + ", Transmission: " + OtherParameters[2] + "\n";
         }
         else if(Code == "t") {
-            NewVehicle = new Car(ID, Brand, Price, 
+            NewVehicle = new Car(ID, Brand, Price, Rental, 
                     Integer.parseInt(OtherParameters[0]),
                     Double.parseDouble(OtherParameters[1]),
                     Double.parseDouble(OtherParameters[2]),
@@ -135,6 +143,9 @@ class VehicleSystem {
                 );
             MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);NetValue += NewVehicle.GetVehiclePrice() ;
             NetCapacity += NewVehicle.getCapacity();
+            return "Truck - ID: "+ID+", Brand: "+Brand+", Price: "+Price+", Rental Cost: "+Rental+"/day," + 
+                   "Cargo Capacity: "+OtherParameters[1]+" kg, Bed Length: "+OtherParameters[2]+
+                   " m, Axles: "+OtherParameters[0]+", Mileage: " + OtherParameters[3] + " miles/gallon";
         }
         else if(Code == "b") {
             NewVehicle = new Bicycle(ID, Brand, Price, 
@@ -143,6 +154,7 @@ class VehicleSystem {
                     Integer.parseInt(OtherParameters[2])
                 );
             MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);NetValue += NewVehicle.GetVehiclePrice() ;
+            return "";
         }
         else if(Code == "d") {
             NewVehicle = new Drone(ID, Brand, Price, 
