@@ -98,9 +98,15 @@ class DealerShipCustomer {
 
 class VehicleSystem {
     public Map<Integer, Vehicle> MapOfVehiclesOwnedbyTheDealerShip = new LinkedHashMap<>();
+    private Map<Integer, DealerShipCustomer> MapOfCustomers = new LinkedHashMap<>();
+    private int CurrentCustomerID;
+    private double NetValue;
+
+    public VehicleSystem () {CurrentCustomerID = 1; NetValue = 0;}
     
     public void AddVehicle(String Code, int ID, String Brand, double Price, String[] OtherParameters) {
         Vehicle NewVehicle;
+        
         if(Code == "c") {
             NewVehicle = new Car(ID, Brand, Price, OtherParameters[0], OtherParameters[1], OtherParameters[2]);
             MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);
@@ -128,6 +134,15 @@ class VehicleSystem {
                     Double.parseDouble(OtherParameters[1]),
                     Integer.parseInt(OtherParameters[2])
                 );
-            MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);}
+            MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);
+        }
+    }
+
+    public void AddCustomer() {
+        DealerShipCustomer NewCutomer = new DealerShipCustomer(CurrentCustomerID++);
+    }
+
+    public String FleetStatistics() {
+        
     }
 }
