@@ -3,6 +3,7 @@
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 class Vehicle {
@@ -29,8 +30,8 @@ class Car extends Vehicle {
     private String CarTransmission;
 
     // Constructor:
-    public Car(int ID, String Brand, double Price, String Type, String Fuel, String Transmission) {
-        super(ID, Brand, Price, double Rental);
+    public Car(int ID, String Brand, double Price, double Rental, String Type, String Fuel, String Transmission) {
+        super(ID, Brand, Price, Rental);
         CarType = Type;
         CarFuel = Fuel;
         CarTransmission = Transmission;
@@ -89,7 +90,7 @@ class Rent {
     public Rent(int V, String B, double P, int D) {VID = V; Brand = B; Price = P; day = D;}
 
     public String DisplayRent() {return "- Vehicle ID: " + VID + ", Brand: "+ Brand + ", Rental Duration: " + day + " days, Rental Cost: " + Price + "\n";}
-}
+};
 
 
 
@@ -111,7 +112,7 @@ class DealerShipCustomer {
         }
         return ans;
     }
-}
+};
 
 
 
@@ -125,6 +126,7 @@ class VehicleSystem {
 
     public VehicleSystem () {CurrentCustomerID = 1; NetValue = 0;}
     
+    // Method to add a vehicle
     public String AddVehicle(String Code, int ID, String Brand, double Price, double Rental, String[] OtherParameters) {
         Vehicle NewVehicle;
         if(Code == "c") {
@@ -132,7 +134,8 @@ class VehicleSystem {
             MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);
             NetValue += NewVehicle.GetVehiclePrice() ;
             return "Car - ID:" + ID + "Brand: " + Brand + ", Price: " + Price + ", Rental Cost: " + 
-                Rental + "/day, Type: " + OtherParameters[0] + ", Fuel: " + OtherParameters[1] + ", Transmission: " + OtherParameters[2] + "\n";
+                Rental + "/day, Type: " + OtherParameters[0] + ", Fuel: " +
+                OtherParameters[1] + ", Transmission: " + OtherParameters[2] + "\n";
         }
         else if(Code == "t") {
             NewVehicle = new Car(ID, Brand, Price, Rental, 
@@ -154,7 +157,9 @@ class VehicleSystem {
                     Integer.parseInt(OtherParameters[2])
                 );
             MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);NetValue += NewVehicle.GetVehiclePrice() ;
-            return "";
+            return "Bicycle - ID: "+ID+", Brand: "+Brand+", Price: "+Price+", Rental Cost: "+Rental+"/day, Type: "+
+                OtherParameters[0]+", Frame: " + OtherParameters[1] +
+                ", Gears: " + OtherParameters[2] + "\n";
         }
         else if(Code == "d") {
             NewVehicle = new Drone(ID, Brand, Price, 
@@ -163,30 +168,63 @@ class VehicleSystem {
                     Integer.parseInt(OtherParameters[2])
                 );
             MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);NetValue += NewVehicle.GetVehiclePrice() ;
+            return "Drone - ID: "+ID+", Brand: "+Brand+", Price: "+Price+", Rental Cost: "+Rental+
+                "/day, Max Altitude: "+OtherParameters[0]+" m, Flight time: "+
+                OtherParameters[1]+" min, Camera Resolution: " + OtherParameters[2] +" MP";
         }
     }
-
-    public void AddCustomer() {
+    
+    // Method to add Customer
+    public String AddCustomer() {
         DealerShipCustomer NewCutomer = new DealerShipCustomer(CurrentCustomerID++);
         MapOfCustomers.put(CurrentCustomerID - 1, NewCutomer);
+        return "Customer " + (CurrentCustomerID - 1) + " added";
     }
-
+    
+    //Method to show fleet Statistics
     public String FleetStatistics() {
         String ans = "Total Value of All Vehicles: " + NetValue + "\n";
         ans += "Total Cargo Capacity of Trucks: " + NetCapacity + "\n";
         return ans;
     }
 
+    // Method to add a rental service provided
     public void AddRental(int CustomerID, int VehicleID, int days) {
         String Brand = MapOfVehiclesOwnedbyTheDealerShip.get(i).GetVehicleBrand();
         String Price = MapOfVehiclesOwnedbyTheDealerShip.get(i).GetVehiclePrice();
         MapOfCustomers.get(CustomerID).AddRental(VehicleID, Brand, Price, days);
     }
 
+    // Method to retrieve a customers History
     public String GetCustomerHistroy(int ID) {
         return MapOfCustomers.get(ID).DisplayHistory();
     }
+};
+
+class FleetManagement {
+    public static void Main(String[] args) {
+        VehicleSystem RentalService = new VehicleSystem();
+        Scanner Scan = new Scanner(System.in);
+        String S, ans = "";
+        while(true) {
+            S = Scan.nextLine();
+            String Command = S.split(" ", 2)[0];
+            if(Command == "END") {break;}
+            else if(Command == "ADD_CUSTOMER") {ans += RentalService.AddCustomer();}
+            else if(Command == "FLEET_STATISTICS") {ans += RentalService.FleetStatistics();}
+            else if(Command == "RENT") {}
+        }
+        System.out.print(ans);
+        Scan.close();
+    }
 }
+
+
+
+
+
+
+
 
 
 
