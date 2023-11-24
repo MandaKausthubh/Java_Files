@@ -43,4 +43,18 @@ Two types of type casting:
 - Narrowing.
 - Also can lead to Run-Time-Errors.
 
-#### Advatages and Dis-advantages of TypeCasting.
+### Wrapper class:
+
+
+## Objects and References:
+When ever we create a Integer, the data is sotred in the Heap and the references are stored in Stack.
+The references are present in the Stack, which helps in the implementation. The entities present in Stack are references for the "Objects" which are created in the Heap Segment. The garbage collectors(G.C) are basically there to remove memory from Heap, to which there is no corresponding instance. The ```new``` keyword is used for creating memory for an object in Heap. It is similar to ```malloc/alloc``` in Java.
+
+
+## What is an Object ?
+An object is a 'blue print'. It contains Fields/Attibutes/Data are used to describe the state and Meathods/Class_Function to describe the functioning and actions of the object.
+
+## Declaring and using an Object?
+```java
+
+```
