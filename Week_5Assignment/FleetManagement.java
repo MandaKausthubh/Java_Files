@@ -65,13 +65,14 @@ class Bicycle extends Vehicle {
 };
 
 class Drone extends Vehicle {
-    private double DroneMaxAltitude, DroneFlyingTime;
+    private double DroneMaxAltitude, DroneFlyingTime, DroneCameraRsolution;
     
     //Constructor: 
-    public Drone(int ID, String Brand, double Price, double MaxAltitude, double FlyingTime) {
+    public Drone(int ID, String Brand, double Price, double MaxAltitude, double FlyingTime, int CameraResolution) {
         super(ID, Brand, Price);
         DroneMaxAltitude = MaxAltitude;
         DroneFlyingTime = FlyingTime;
+        DroneCameraRsolution = CameraResolution;
     }
 };
 
@@ -97,7 +98,36 @@ class DealerShipCustomer {
 
 class VehicleSystem {
     public Map<Integer, Vehicle> MapOfVehiclesOwnedbyTheDealerShip = new LinkedHashMap<>();
-    private Map<Integer, DealerShipCustomer> MapOfAllCustomers = new LinkedHashMap<>();
     
-    
+    public void AddVehicle(String Code, int ID, String Brand, double Price, String[] OtherParameters) {
+        Vehicle NewVehicle;
+        if(Code == "c") {
+            NewVehicle = new Car(ID, Brand, Price, OtherParameters[0], OtherParameters[1], OtherParameters[2]);
+            MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);
+        }
+        else if(Code == "t") {
+            NewVehicle = new Car(ID, Brand, Price, 
+                    Integer.parseInt(OtherParameters[0]),
+                    Double.parseDouble(OtherParameters[1]),
+                    Double.parseDouble(OtherParameters[2]),
+                    Double.parseDouble(OtherParameters[3])
+                );
+            MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);
+        }
+        else if(Code == "b") {
+            NewVehicle = new Bicycle(ID, Brand, Price, 
+                    (OtherParameters[0]),
+                    (OtherParameters[1]),
+                    Integer.parseInt(OtherParameters[2])
+                );
+            MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);
+        }
+        else if(Code == "d") {
+            NewVehicle = new Drone(ID, Brand, Price, 
+                    Double.parseDouble(OtherParameters[0]),
+                    Double.parseDouble(OtherParameters[1]),
+                    Integer.parseInt(OtherParameters[2])
+                );
+            MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);}
+    }
 }
