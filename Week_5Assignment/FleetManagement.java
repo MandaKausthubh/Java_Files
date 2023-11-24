@@ -18,9 +18,9 @@ class Vehicle {
     }
 
     // Getters:
-    private String GetVehicleBrand() {return VehicleBrand;}
-    private int GetVehicleID () {return VehicleID;}
-    private double GetVehiclePrice () {return VehiclePrice;}
+    public String GetVehicleBrand() {return VehicleBrand;}
+    public int GetVehicleID () {return VehicleID;}
+    public double GetVehiclePrice () {return VehiclePrice;}
 };
 
 class Car extends Vehicle {
@@ -49,6 +49,8 @@ class Truck extends Vehicle{
         TruckFuelEfficiency = FuelEfficiency;
         TruckNumberOfAxels = NumberOfAxels;
     }
+
+    public double GetVehicleCapacity() {return TruckCargoCapacity;}
 };
 
 class Bicycle extends Vehicle {
@@ -89,10 +91,14 @@ class Rent {
 
 class DealerShipCustomer {
     private int CustomerID;
-    private Set<Integer> VehiclesBorrowedByCustomer;
+    private Set<Rent> VehiclesBorrowedByCustomer;
     public DealerShipCustomer(int ID) {
         CustomerID = ID;
         VehiclesBorrowedByCustomer = new LinkedHashSet<>();
+    }
+    public void AddRental(int VID, String Brand, int P, int D) {
+        Rent NewRent = new Rent(VID, Brand, P, D);
+        VehiclesBorrowedByCustomer.add(NewRent);
     }
 }
 
@@ -101,6 +107,7 @@ class VehicleSystem {
     private Map<Integer, DealerShipCustomer> MapOfCustomers = new LinkedHashMap<>();
     private int CurrentCustomerID;
     private double NetValue;
+    private double NetCapacity;
 
     public VehicleSystem () {CurrentCustomerID = 1; NetValue = 0;}
     
@@ -110,6 +117,7 @@ class VehicleSystem {
         if(Code == "c") {
             NewVehicle = new Car(ID, Brand, Price, OtherParameters[0], OtherParameters[1], OtherParameters[2]);
             MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);
+            NetValue += NewVehicle.GetVehiclePrice() ;
         }
         else if(Code == "t") {
             NewVehicle = new Car(ID, Brand, Price, 
@@ -118,7 +126,8 @@ class VehicleSystem {
                     Double.parseDouble(OtherParameters[2]),
                     Double.parseDouble(OtherParameters[3])
                 );
-            MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);
+            MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);NetValue += NewVehicle.GetVehiclePrice() ;
+            NetCapacity += NewVehicle.getCapacity();
         }
         else if(Code == "b") {
             NewVehicle = new Bicycle(ID, Brand, Price, 
@@ -126,7 +135,7 @@ class VehicleSystem {
                     (OtherParameters[1]),
                     Integer.parseInt(OtherParameters[2])
                 );
-            MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);
+            MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);NetValue += NewVehicle.GetVehiclePrice() ;
         }
         else if(Code == "d") {
             NewVehicle = new Drone(ID, Brand, Price, 
@@ -134,15 +143,24 @@ class VehicleSystem {
                     Double.parseDouble(OtherParameters[1]),
                     Integer.parseInt(OtherParameters[2])
                 );
-            MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);
+            MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);NetValue += NewVehicle.GetVehiclePrice() ;
         }
     }
 
     public void AddCustomer() {
         DealerShipCustomer NewCutomer = new DealerShipCustomer(CurrentCustomerID++);
+        MapOfCustomers.put(CurrentCustomerID - 1, NewCutomer);
     }
 
     public String FleetStatistics() {
-        
+        String ans = "Total Value of All Vehicles: " + NetValue + "\n";
+        ans += "Total Cargo Capacity of Trucks: " + NetCapacity + "\n";
+        return ans;
+    }
+
+    public void AddRental(int CustomerID, int VehicleID, int days) {
+        String Brand = MapOfVehiclesOwnedbyTheDealerShip.get(i),GetVehicleBrand();
+        String Price = 
+        MapOfCustomers.get(CustomerID).AddRental(VehicleID, MapOfVehiclesOwnedbyTheDealerShip.get(VehicleID).GetVehicleBrand(), );
     }
 }
