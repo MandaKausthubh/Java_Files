@@ -1,5 +1,4 @@
 // First is the File explaining the base class.
-
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -10,18 +9,21 @@ class Vehicle {
     private String VehicleBrand;
     private int VehicleID;
     private double VehiclePrice;
+    private double RentalPrice;
 
     // Constructors:
     public Vehicle(int ID, String Brand, double Price, double Rental) {
         VehicleBrand = Brand;
         VehicleID = ID;
         VehiclePrice = Price;
+        RentalPrice = Rental;
     }
 
     // Getters:
     public String GetVehicleBrand() {return VehicleBrand;}
     public int GetVehicleID () {return VehicleID;}
     public double GetVehiclePrice () {return VehiclePrice;}
+    public double GetVehicleRental () {return RentalPrice;}
 };
 
 class Car extends Vehicle {
@@ -101,7 +103,7 @@ class DealerShipCustomer {
         CustomerID = ID;
         VehiclesBorrowedByCustomer = new LinkedHashSet<>();
     }
-    public void AddRental(int VID, String Brand, int P, int D) {
+    public void AddRental(int VID, String Brand, Double P, int D) {
         Rent NewRent = new Rent(VID, Brand, P, D);
         VehiclesBorrowedByCustomer.add(NewRent);
     }
@@ -119,7 +121,7 @@ class DealerShipCustomer {
 
 class VehicleSystem {
     public Map<Integer, Vehicle> MapOfVehiclesOwnedbyTheDealerShip = new LinkedHashMap<>();
-    private Map<Integer, DealerShipCustomer> MapOfCustomers = new LinkedHashMap<>();
+    public Map<Integer, DealerShipCustomer> MapOfCustomers = new LinkedHashMap<>();
     private int CurrentCustomerID;
     private double NetValue;
     private double NetCapacity;
@@ -138,20 +140,20 @@ class VehicleSystem {
                 OtherParameters[1] + ", Transmission: " + OtherParameters[2] + "\n";
         }
         else if(Code == "t") {
-            NewVehicle = new Car(ID, Brand, Price, Rental, 
+            NewVehicle = new Truck(ID, Brand, Price, Rental, 
                     Integer.parseInt(OtherParameters[0]),
                     Double.parseDouble(OtherParameters[1]),
                     Double.parseDouble(OtherParameters[2]),
                     Double.parseDouble(OtherParameters[3])
                 );
             MapOfVehiclesOwnedbyTheDealerShip.put(ID, NewVehicle);NetValue += NewVehicle.GetVehiclePrice() ;
-            NetCapacity += NewVehicle.getCapacity();
+            NetCapacity += Double.parseDouble(OtherParameters[1]);
             return "Truck - ID: "+ID+", Brand: "+Brand+", Price: "+Price+", Rental Cost: "+Rental+"/day," + 
                    "Cargo Capacity: "+OtherParameters[1]+" kg, Bed Length: "+OtherParameters[2]+
                    " m, Axles: "+OtherParameters[0]+", Mileage: " + OtherParameters[3] + " miles/gallon";
         }
         else if(Code == "b") {
-            NewVehicle = new Bicycle(ID, Brand, Price, 
+            NewVehicle = new Bicycle(ID, Brand, Price, Rental, 
                     (OtherParameters[0]),
                     (OtherParameters[1]),
                     Integer.parseInt(OtherParameters[2])
@@ -162,7 +164,7 @@ class VehicleSystem {
                 ", Gears: " + OtherParameters[2] + "\n";
         }
         else if(Code == "d") {
-            NewVehicle = new Drone(ID, Brand, Price, 
+            NewVehicle = new Drone(ID, Brand, Price, Rental,
                     Double.parseDouble(OtherParameters[0]),
                     Double.parseDouble(OtherParameters[1]),
                     Integer.parseInt(OtherParameters[2])
@@ -172,6 +174,7 @@ class VehicleSystem {
                 "/day, Max Altitude: "+OtherParameters[0]+" m, Flight time: "+
                 OtherParameters[1]+" min, Camera Resolution: " + OtherParameters[2] +" MP";
         }
+        return "LOL";
     }
     
     // Method to add Customer
@@ -190,8 +193,8 @@ class VehicleSystem {
 
     // Method to add a rental service provided
     public void AddRental(int CustomerID, int VehicleID, int days) {
-        String Brand = MapOfVehiclesOwnedbyTheDealerShip.get(i).GetVehicleBrand();
-        String Price = MapOfVehiclesOwnedbyTheDealerShip.get(i).GetVehiclePrice();
+        String Brand = MapOfVehiclesOwnedbyTheDealerShip.get(VehicleID).GetVehicleBrand();
+        Double Price = MapOfVehiclesOwnedbyTheDealerShip.get(VehicleID).GetVehiclePrice();
         MapOfCustomers.get(CustomerID).AddRental(VehicleID, Brand, Price, days);
     }
 
@@ -202,17 +205,72 @@ class VehicleSystem {
 };
 
 class FleetManagement {
-    public static void Main(String[] args) {
+    public static void main(String[] args) {
         VehicleSystem RentalService = new VehicleSystem();
         Scanner Scan = new Scanner(System.in);
-        String S, ans = "";
+        String S, ans = ""; int i = 1;
         while(true) {
+            System.out.println(i++);
             S = Scan.nextLine();
             String Command = S.split(" ", 2)[0];
+            // String Residue = S.split(" ", 2)[1];
             if(Command == "END") {break;}
             else if(Command == "ADD_CUSTOMER") {ans += RentalService.AddCustomer();}
             else if(Command == "FLEET_STATISTICS") {ans += RentalService.FleetStatistics();}
-            else if(Command == "RENT") {}
+            else if(Command == "RENT") {
+                // Renting ...
+                int VehicleID = Integer.parseInt(S.split(" ", 4)[2]);
+                int CustomerID = Integer.parseInt(S.split(" ", 4)[1]);
+                int day = Integer.parseInt(S.split(" ", 4)[3]);
+                RentalService.AddRental(CustomerID, VehicleID, day);
+                ans += "Vehicle " + VehicleID + " Rented for " + day + " days by customer " + CustomerID +
+                    "Rental Cost: " + day * RentalService.MapOfVehiclesOwnedbyTheDealerShip.get(VehicleID).GetVehicleRental() + '\n';
+            }
+            else if(Command == "CUSTOMER_HISTORY") {
+                int CustomerID = Integer.parseInt(S.split(" ", 2)[2]);
+                RentalService.MapOfCustomers.get(CustomerID).DisplayHistory();
+            }
+            else if(Command == "ADD_VEHICLE") {
+                String Code = S.split(" ", 3)[1];
+                if(Code == "c") {
+                    String[] SArray = S.split(" ", 9);
+                    int VehicleID = Integer.parseInt(SArray[2]);
+                    String Brand = SArray[3];
+                    double Price = Double.parseDouble(SArray[4]);
+                    double Rental = Double.parseDouble(SArray[5]);
+                    String[] OtherParameters = {SArray[6], SArray[7], SArray[8]};
+                    ans += RentalService.AddVehicle("c", VehicleID, Brand, Price, Rental, OtherParameters);
+                }
+                else if(Code == "t") {
+                    String[] SArray = S.split(" ", 10);
+                    int VehicleID = Integer.parseInt(SArray[2]);
+                    String Brand = SArray[3];
+                    double Price = Double.parseDouble(SArray[4]);
+                    double Rental = Double.parseDouble(SArray[5]);
+                    String[] OtherParameters = {SArray[8], SArray[6], SArray[7], SArray[9]};
+                    ans += RentalService.AddVehicle("c", VehicleID, Brand, Price, Rental, OtherParameters);
+                }
+                else if(Code == "b") {
+                    String[] SArray = S.split(" ", 10);
+                    int VehicleID = Integer.parseInt(SArray[2]);
+                    String Brand = SArray[3];
+                    double Price = Double.parseDouble(SArray[4]);
+                    double Rental = Double.parseDouble(SArray[5]);
+                    String[] OtherParameters = {SArray[6], SArray[7], SArray[8]};
+                    ans += RentalService.AddVehicle("c", VehicleID, Brand, Price, Rental, OtherParameters);
+
+                }
+                else if(Code == "d") {
+                    String[] SArray = S.split(" ", 9);
+                    int VehicleID = Integer.parseInt(SArray[2]);
+                    String Brand = SArray[3];
+                    double Price = Double.parseDouble(SArray[4]);
+                    double Rental = Double.parseDouble(SArray[5]);
+                    String[] OtherParameters = {SArray[6], SArray[7], SArray[8]};
+                    ans += RentalService.AddVehicle("c", VehicleID, Brand, Price, Rental, OtherParameters);
+
+                }
+            }
         }
         System.out.print(ans);
         Scan.close();
