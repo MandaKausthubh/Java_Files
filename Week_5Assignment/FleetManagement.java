@@ -1,6 +1,7 @@
 // First is the File explaining the base class.
 
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,7 +66,8 @@ class Bicycle extends Vehicle {
 
 class Drone extends Vehicle {
     private double DroneMaxAltitude, DroneFlyingTime;
-
+    
+    //Constructor: 
     public Drone(int ID, String Brand, double Price, double MaxAltitude, double FlyingTime) {
         super(ID, Brand, Price);
         DroneMaxAltitude = MaxAltitude;
@@ -73,13 +75,29 @@ class Drone extends Vehicle {
     }
 };
 
+class Rent {
+    private int VID;
+    private String Brand;
+    private double Price;
+    private int day;
+
+    public Rent(int V, String B, double P, int D) {VID = V; Brand = B; Price = P; day = D;}
+
+    public String DisplayRent() {return "- Vehicle ID: " + VID + ", Brand: "+ Brand + ", Rental Duration: " + day + " days, Rental Cost: " + Price + "\n";}
+}
+
 class DealerShipCustomer {
     private int CustomerID;
     private Set<Integer> VehiclesBorrowedByCustomer;
+    public DealerShipCustomer(int ID) {
+        CustomerID = ID;
+        VehiclesBorrowedByCustomer = new LinkedHashSet<>();
+    }
 }
 
 class VehicleSystem {
     public Map<Integer, Vehicle> MapOfVehiclesOwnedbyTheDealerShip = new LinkedHashMap<>();
     private Map<Integer, DealerShipCustomer> MapOfAllCustomers = new LinkedHashMap<>();
-
+    
+    
 }
