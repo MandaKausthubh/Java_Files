@@ -78,6 +78,8 @@ class Drone extends Vehicle {
     }
 };
 
+
+
 class Rent {
     private int VID;
     private String Brand;
@@ -88,6 +90,8 @@ class Rent {
 
     public String DisplayRent() {return "- Vehicle ID: " + VID + ", Brand: "+ Brand + ", Rental Duration: " + day + " days, Rental Cost: " + Price + "\n";}
 }
+
+
 
 class DealerShipCustomer {
     private int CustomerID;
@@ -101,6 +105,9 @@ class DealerShipCustomer {
         VehiclesBorrowedByCustomer.add(NewRent);
     }
 }
+
+
+
 
 class VehicleSystem {
     public Map<Integer, Vehicle> MapOfVehiclesOwnedbyTheDealerShip = new LinkedHashMap<>();
@@ -159,8 +166,16 @@ class VehicleSystem {
     }
 
     public void AddRental(int CustomerID, int VehicleID, int days) {
-        String Brand = MapOfVehiclesOwnedbyTheDealerShip.get(i),GetVehicleBrand();
-        String Price = 
-        MapOfCustomers.get(CustomerID).AddRental(VehicleID, MapOfVehiclesOwnedbyTheDealerShip.get(VehicleID).GetVehicleBrand(), );
+        String Brand = MapOfVehiclesOwnedbyTheDealerShip.get(i).GetVehicleBrand();
+        String Price = MapOfVehiclesOwnedbyTheDealerShip.get(i).GetVehiclePrice();
+        MapOfCustomers.get(CustomerID).AddRental(VehicleID, Brand, Price, days);
+    }
+
+    public String GetCustomerHistroy(int ID) {
+        return MapOfCustomers.get(ID).DisplayHistory();
     }
 }
+
+
+
+
